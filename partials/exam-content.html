@@ -1,0 +1,34 @@
+<div x-data="{ search: '', selected: new URLSearchParams(location.search).get('category') || 'All', showPractice: !!new URLSearchParams(location.search).get('category'), difficulty: 'All', savedOnly: false }">
+  <section class="hero"><div><h2>Choose a subject to practise</h2><p>Build topic knowledge with subject-wise questions, instant feedback, explanations and a revision list.</p></div><div class="hero-mark">🎯</div></section>
+  <div class="toolbar">
+    <input type="search" x-model="search" placeholder="Search questions or subjects..." aria-label="Search questions">
+    <select x-model="selected" aria-label="Filter category"><option value="All">All categories</option><template x-for="category in categories" :key="category.name"><option :value="category.name" x-text="category.name"></option></template></select>
+    <select x-model="difficulty" aria-label="Filter difficulty"><option value="All">All levels</option><option value="Easy">Easy</option><option value="Medium">Medium</option><option value="Hard">Hard</option></select>
+    <label class="check-filter"><input type="checkbox" x-model="savedOnly"> Saved only</label>
+    <button class="secondary-btn" @click="showPractice = false; selected = 'All'; search = ''; difficulty = 'All'; savedOnly = false">Clear filters</button>
+  </div>
+  <div class="card-grid" x-show="!showPractice && selected === 'All' && !savedOnly && !search.trim()">
+    <template x-for="category in categories.filter(item => (item.name + ' ' + item.description).toLowerCase().includes(search.toLowerCase()))" :key="category.name">
+      <button class="category-card category-button" @click="selected = category.name; showPractice = true">
+        <div class="category-icon" x-text="category.icon"></div><h3 x-text="category.name"></h3><p x-text="category.description"></p>
+        <div class="card-foot"><span x-text="questionCount(category.name) + ' questions'"></span><span>Open →</span></div>
+      </button>
+    </template>
+  </div>
+  <div x-show="showPractice || selected !== 'All' || savedOnly || search.trim().length > 0" x-cloak class="practice-area">
+    <div class="section-heading"><h2 x-text="savedOnly ? 'Saved for revision' : (selected === 'All' ? 'All questions' : selected + ' questions')"></h2><button class="secondary-btn" @click="selected = 'All'; showPractice = false; savedOnly = false">Back to subjects</button></div>
+    <p class="result-message" x-text="filteredQuestions(selected, search, difficulty, savedOnly).length + ' questions found'"></p>
+    <div class="question-list">
+      <template x-for="question in filteredQuestions(selected, search, difficulty, savedOnly)" :key="question.id">
+        <article class="question-card">
+          <div class="question-meta"><span class="pill" x-text="question.category"></span><span class="pill year" x-text="question.year"></span><span class="pill" x-text="question.difficulty || 'Medium'"></span><span class="pill" x-text="answered(question.id) ? (answered(question.id).correct ? 'Correct' : 'Attempted') : 'Not attempted'"></span></div>
+          <p class="question-text" x-text="question.text"></p>
+          <div class="option-list"><template x-for="(option, index) in question.options" :key="index"><button class="option" :class="optionClass(question, index)" :disabled="!!answered(question.id)" @click="answerQuestion(question, index)"><span x-text="String.fromCharCode(65 + index) + '.'"></span><span x-text="option"></span></button></template></div>
+          <div class="question-actions"><button class="secondary-btn small-btn" @click="toggleBookmark(question.id)" x-text="isBookmarked(question.id) ? '★ Saved' : '☆ Save for revision'"></button></div>
+          <div class="explanation" x-show="answered(question.id)" x-cloak><strong>Explanation:</strong> <span x-text="question.explanation"></span></div>
+        </article>
+      </template>
+      <div class="empty-state" x-show="filteredQuestions(selected, search, difficulty, savedOnly).length === 0">No questions found. Try changing your filters or save a question for revision.</div>
+    </div>
+  </div>
+</div>

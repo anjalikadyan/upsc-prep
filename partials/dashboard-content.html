@@ -1,0 +1,23 @@
+<div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-label">Questions attempted</div><div class="stat-value" x-text="stats().attempted"></div></div>
+    <div class="stat-card"><div class="stat-label">Correct answers</div><div class="stat-value" x-text="stats().correct"></div></div>
+    <div class="stat-card"><div class="stat-label">Practice accuracy</div><div class="stat-value" x-text="stats().accuracy + '%'"></div></div>
+    <div class="stat-card"><div class="stat-label">Tests completed</div><div class="stat-value" x-text="stats().tests"></div></div>
+    <div class="stat-card"><div class="stat-label">Saved questions</div><div class="stat-value" x-text="stats().bookmarks"></div></div>
+  </div>
+  <div class="panel"><div class="section-heading"><h2>Subject-wise accuracy</h2><p>Based on practice answers</p></div>
+    <template x-for="category in categories" :key="category.name">
+      <div class="progress-row"><span x-text="category.name"></span><div class="progress-track"><div class="progress-fill" :style="'width:' + categoryAccuracy(category.name) + '%'"></div></div><strong x-text="categoryAccuracy(category.name) + '%'"></strong></div>
+    </template>
+  </div>
+  <div class="panel"><div class="section-heading"><h2>Mock test history</h2><p>Latest five attempts</p></div>
+    <div x-show="testHistory().length">
+      <template x-for="item in testHistory().slice(-5).reverse()" :key="item.date">
+        <div class="progress-row"><span x-text="new Date(item.date).toLocaleDateString()"></span><div class="progress-track"><div class="progress-fill" :style="'width:' + Math.round(item.score / item.total * 100) + '%'"></div></div><strong x-text="item.score + '/' + item.total"></strong></div>
+      </template>
+    </div>
+    <div class="empty-state" x-show="!testHistory().length">No mock tests completed yet. Start your first test to see results here.</div>
+  </div>
+  <div class="question-actions"><a class="primary-btn" href="mock.html">Start a mock test</a><button class="danger-btn" @click="resetProgress()">Reset all progress</button></div>
+</div>

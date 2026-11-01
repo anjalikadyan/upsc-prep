@@ -1,0 +1,26 @@
+<section class="hero">
+  <div><p class="eyebrow">SMALL STEPS. BIG RESULTS.</p><h2>Build your UPSC preparation habit, one question at a time.</h2><p>Practice topic-wise questions, take timed mock tests and track your preparation as you improve.</p><div class="hero-actions"><a class="primary-btn" href="mock.html">Start a mock test →</a></div></div>
+  <div class="hero-mark" aria-hidden="true">📚</div>
+</section>
+<div class="stats-grid">
+  <div class="stat-card"><div class="stat-label">Questions attempted</div><div class="stat-value" x-text="stats().attempted"></div><div class="stat-label">Unique practice questions</div></div>
+  <div class="stat-card"><div class="stat-label">Correct answers</div><div class="stat-value" x-text="stats().correct"></div><div class="stat-label">Across practice sessions</div></div>
+  <div class="stat-card"><div class="stat-label">Accuracy</div><div class="stat-value" x-text="stats().accuracy + '%'"></div><div class="stat-label">Practice performance</div></div>
+  <div class="stat-card"><div class="stat-label">Mock tests</div><div class="stat-value" x-text="stats().tests"></div><div class="stat-label">Completed tests</div></div>
+  <div class="stat-card"><div class="stat-label">Saved questions</div><div class="stat-value" x-text="stats().bookmarks"></div><div class="stat-label">For later revision</div></div>
+</div>
+<div class="section-heading"><h2>Explore categories</h2><a class="secondary-btn" href="exam.html">View all</a></div>
+<div class="card-grid">
+  <template x-for="category in categories.slice(0, 4)" :key="category.name">
+    <a class="category-card" :href="'exam.html?category=' + encodeURIComponent(category.name)">
+      <div class="category-icon" x-text="category.icon"></div><h3 x-text="category.name"></h3><p x-text="category.description"></p>
+      <div class="card-foot"><span x-text="questionCount(category.name) + ' practice questions'"></span><span>Practice →</span></div>
+    </a>
+  </template>
+</div>
+<div class="section-heading"><h2>Quick actions</h2><p>Choose how you want to study today</p></div>
+<div class="card-grid">
+  <a class="quick-card" href="exam.html"><h3>📖 Topic practice</h3><p>Choose a subject and review questions with explanations.</p></a>
+  <a class="quick-card" href="mock.html"><h3>⏱️ Timed mock test</h3><p>Attempt a timed set of questions and review your score.</p></a>
+  <a class="quick-card" href="dashboard.html"><h3>📊 View progress</h3><p>See accuracy, completed tests and subject-wise performance.</p></a>
+</div>

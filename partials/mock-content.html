@@ -1,0 +1,44 @@
+<div x-data="mockPanel()">
+  <section class="hero"><div><h2>Mock test challenge</h2><p>Test your knowledge under time pressure. Your result will be saved to your progress dashboard.</p></div><div class="hero-mark">⏱️</div></section>
+  <div class="panel" x-show="!running && !result">
+    <div class="section-heading"><h2>Configure your test</h2><p>Choose your preferred test settings</p></div>
+    <div class="toolbar settings-toolbar">
+      <label>Category<select x-model="category"><option value="All">All categories</option><template x-for="item in categories" :key="item.name"><option :value="item.name" x-text="item.name"></option></template></select></label>
+      <label>Questions<select x-model.number="count"><option :value="5">5 questions</option><option :value="10">10 questions</option><option :value="20">20 questions</option><option :value="30">30 questions</option></select></label>
+      <label>Duration<select x-model.number="duration"><option :value="5">5 minutes</option><option :value="10">10 minutes</option><option :value="20">20 minutes</option></select></label>
+    </div>
+    <p class="result-message">Questions are selected from the available question bank. Your score and completion date are saved in this browser.</p>
+    <button class="primary-btn" @click="start()">Begin test →</button>
+  </div>
+  <div class="panel" x-show="running" x-cloak>
+    <div class="test-top"><div><span class="pill">MOCK TEST</span><p class="result-message" x-text="'Question ' + (index + 1) + ' of ' + questions.length + ' · ' + Object.keys(answers).length + ' answered'"></p></div><div class="timer" x-text="timeText()"></div></div>
+    <div class="test-progress"><div :style="'width:' + ((index + 1) / questions.length * 100) + '%'"></div></div>
+    <div class="question-meta"><span class="pill" x-text="current().category"></span><span class="pill year" x-text="current().year"></span></div>
+    <h2 class="question-text" x-text="current().text"></h2>
+    <div class="test-options">
+      <template x-for="(option, optionIndex) in current().options" :key="optionIndex">
+        <button class="test-option" :class="{ selected: answers[current().id] === optionIndex }" @click="answers[current().id] = optionIndex"><span x-text="String.fromCharCode(65 + optionIndex) + '. ' + option"></span></button>
+      </template>
+    </div>
+    <div class="test-controls"><button class="secondary-btn" @click="index--" :disabled="index === 0">← Previous</button><div><button class="secondary-btn" @click="index++" :disabled="index === questions.length - 1">Next →</button> <button class="primary-btn" @click="submit(false)">Submit test</button></div></div>
+  </div>
+  <div class="panel" x-show="result" x-cloak>
+    <div class="eyebrow" x-text="result?.timeUp ? 'TIME IS UP' : 'TEST COMPLETED'"></div>
+    <div class="result-score" x-text="result?.score + '/' + result?.total"></div>
+    <h2 x-text="Math.round((result?.score || 0) / (result?.total || 1) * 100) + '% score'"></h2>
+    <p class="result-message" x-text="result?.timeUp ? 'Your time ended and the test was submitted automatically.' : 'Great effort. Review your answers and keep practising.'"></p>
+    <div class="stats-grid"><div class="stat-card"><div class="stat-label">Attempted</div><div class="stat-value" x-text="result?.attempted"></div></div><div class="stat-card"><div class="stat-label">Correct</div><div class="stat-value" x-text="result?.score"></div></div><div class="stat-card"><div class="stat-label">Incorrect / skipped</div><div class="stat-value" x-text="result?.total - result?.score"></div></div></div>
+    <div class="question-list">
+      <template x-for="question in review" :key="question.id">
+        <article class="question-card"><div class="question-meta"><span class="pill" x-text="question.category"></span><span class="pill" x-text="answers[question.id] === question.answer ? 'Correct' : 'Review'"></span></div><p class="question-text" x-text="question.text"></p><p class="result-message">Correct answer: <strong x-text="question.options[question.answer]"></strong></p><div class="explanation" x-text="question.explanation"></div></article>
+      </template>
+    </div>
+    <div class="question-actions"><button class="primary-btn" @click="reset()">Try another test</button><a class="secondary-btn" href="dashboard.html">View dashboard</a></div>
+  </div>
+  <div class="panel" x-show="!running && !result && testHistory().length">
+    <div class="section-heading"><h2>Recent mock tests</h2><p>Saved in this browser</p></div>
+    <template x-for="item in testHistory().slice(-3).reverse()" :key="item.date">
+      <div class="progress-row"><span x-text="new Date(item.date).toLocaleDateString()"></span><div class="progress-track"><div class="progress-fill" :style="'width:' + Math.round(item.score / item.total * 100) + '%'"></div></div><strong x-text="item.score + '/' + item.total"></strong></div>
+    </template>
+  </div>
+</div>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UPSC Prep | Exams</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script defer src="https://unpkg.com/htmx.org@2.0.4"></script>
+  <script defer src="js/data.js"></script>
+  <script defer src="js/app.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
+</head>
+<body x-data="upscApp()" x-init="init('exam')">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="home.html">U</a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a class="nav-link" href="home.html"><span>⌂</span><small>HOME</small></a>
+        <a class="nav-link active" href="exam.html"><span>▤</span><small>EXAMS</small></a>
+        <a class="nav-link" href="mock.html"><span>✎</span><small>MOCK</small></a>
+        <a class="nav-link" href="dashboard.html"><span>▥</span><small>STATS</small></a>
+      </nav>
+      <div class="sidebar-bottom"><button class="nav-link" @click="resetProgress()"><span>↻</span><small>RESET</small></button></div>
+    </aside>
+    <main class="main-area">
+      <header class="topbar"><div><p class="eyebrow">YOUR UPSC JOURNEY</p><h1>Study Categories</h1></div><div class="topbar-date" x-text="today"></div></header>
+      <div id="page-content" hx-get="partials/exam-content.html" hx-trigger="load" hx-swap="innerHTML"></div>
+      <footer class="footer">Stay consistent. Every question takes you one step closer.</footer>
+    </main>
+  </div>
+  <div class="toast" role="status" x-show="toast" x-transition x-text="toast" x-cloak></div>
+</body>
+</html>
